@@ -1,0 +1,108 @@
+
+// EA Black Dragon MT5
+// Developer: Forex Robot Easy Team
+// Developer's Site: forexroboteasy.com
+
+// Include necessary libraries and indicators
+#include <Trade\PositionInfo.mqh>
+#include <Trade\Trade.mqh>
+#include <Indicator\BlackDragon.mqh>
+#include <MovingAverages.mqh>
+
+// Define global variables
+bool enableHedging = false;
+bool enableNewSeries = true;
+double stopLossMultiplier = 1.5;
+double networkMultiplier = 2.0;
+int fastMA = 50;
+int slowMA = 200;
+
+// Initialize objects
+CBlackDragon blackDragon;
+CMovingAverages movingAverages;
+CTrade trade;
+
+// Function to open a new deal based on indicator color
+void OpenDealBasedOnIndicatorColor()
+{
+    double indicatorColor = blackDragon.GetColor();
+    
+    if (indicatorColor == CLR_GREEN)
+    {
+        trade.Buy();
+    }
+    else if (indicatorColor == CLR_RED)
+    {
+        trade.Sell();
+    }
+}
+
+// Function to increase network of orders or work with stop loss based on indicator color
+void ManageOrdersBasedOnIndicatorColor()
+{
+    double indicatorColor = blackDragon.GetColor();
+    
+    if (indicatorColor == CLR_GREEN)
+    {
+        trade.ModifyStopLoss(stopLossMultiplier);
+        trade.ModifyNetworkOrders(networkMultiplier);
+    }
+    else if (indicatorColor == CLR_RED)
+    {
+        trade.ModifyStopLoss(stopLossMultiplier);
+    }
+}
+
+// Function to enable trading on accounts that support hedging
+void EnableHedging()
+{
+    if (enableHedging)
+    {
+        trade.SetHedging(true);
+    }
+}
+
+// Function to customize settings based on individual trading strategies and preferences
+void CustomizeSettings()
+{
+    // Add custom settings here
+}
+
+// Function to enable or disable opening of a new series of orders
+void EnableOrDisableNewSeries()
+{
+    if (enableNewSeries)
+    {
+        trade.EnableNewSeries();
+    }
+    else
+    {
+        trade.DisableNewSeries();
+    }
+}
+
+// Function to manage moving averages
+void ManageMovingAverages()
+{
+    double fastMAValue = movingAverages.GetMAValue(fastMA);
+    double slowMAValue = movingAverages.GetMAValue(slowMA);
+    
+    // Add moving averages management logic here
+}
+
+// Function to execute trading operations
+void TradeOperations()
+{
+    OpenDealBasedOnIndicatorColor();
+    ManageOrdersBasedOnIndicatorColor();
+    EnableHedging();
+    CustomizeSettings();
+    EnableOrDisableNewSeries();
+    ManageMovingAverages();
+}
+
+// Entry point of the program
+void OnStart()
+{
+    TradeOperations();
+}
